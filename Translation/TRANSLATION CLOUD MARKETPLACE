@@ -1,0 +1,26 @@
+#Google Cloud Fundamentals: Getting Started with Cloud Marketplace
+
+#OBJECTIVES:
+ In this lab, you learn how to launch a solution using Cloud Marketplace.
+#STEP 1
+   Sign in to the Google Cloud Platform (GCP) Console
+     -Use Cloud Marketplace to deploy a LAMP stack
+	      In the GCP Console, on the Navigation menu, click Marketplace.
+                 Type lamp
+				 click LAMP Certified by Bitnami.
+                 click Launch.
+				 For Zone, select the deployment zone that Qwiklabs assigned to you.Leave the remaining settings as their defaults
+				 click Deploy
+         Results:The status of the deployment appears in the console window: lampstack-1 is being deployed    
+#STEP 2:Verify your deployment
+         -click the Site address link ON deployment panel or click Visit the site in the Get started with LAMP Certified by Bitnami section of the page. A new browser tab displays a congratulations message
+		 -close the tab
+		 -On the GCP Console, under Get started with LAMP Certified by Bitnami, click SSH.
+		  execute the following command:
+		       cd /opt/bitnami
+			   sudo sh -c 'echo "<?php phpinfo(); ?>" > apache2/htdocs/phpinfo.php'
+			   exit the command window
+		-Open a new browser tab and  and replace SITE_ADDRESS with the URL in the Site address field in the right pane of the lampstack page.
+		         http://SITE_ADDRESS/phpinfo.php
+		Results:A summary of the PHP configuration of your server is displayed.
+            		Close the phpinfo tab.

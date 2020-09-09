@@ -1,0 +1,75 @@
+#Google Cloud Fundamentals: Getting Started with Deployment Manager and Cloud Monitoring
+
+#OBJECTIVES:
+    In this lab, you will learn how to perform the following tasks:
+        -Create a Deployment Manager deployment.
+
+        -Update a Deployment Manager deployment.
+
+        -View the load on a VM instance using Cloud Monitoring.
+
+Task 1: Sign in to the Google CONSOLE and  Confirm that needed APIs are enabled
+Task2:confirm that these APIs are enabled:
+
+        - Cloud Deployment Manager v2 API
+
+        -Cloud Runtime Configuration API
+
+        - cloud Monitoring API
+
+    
+Task3:CreateCreate a Deployment Manager deployment
+     -click the Open Cloud Shell button (Activate Cloud Shell). Click Continue. 
+		     type export MY_ZONE=Results will be =export MY_ZONE=us-central1-a
+		- download an editable Deployment Manager template: 
+		      gsutil cp gs://cloud-training/gcpfcoreinfra/mydeploy.yaml mydeploy.yaml
+		-In the Cloud Shell, use the sed command to replace the PROJECT_ID placeholder string with your Google Cloud Platform project ID using this command:
+             sed -i -e "s/PROJECT_ID/$DEVSHELL_PROJECT_ID/" mydeploy.yaml
+        -View the mydeploy.yaml file, with your modifications, with this command
+           cat mydeploy.yaml =file will look like this:
+                  resources:
+  - name: my-vm
+    type: compute.v1.instance
+    properties:
+      zone: us-central1-a
+      machineType: zones/us-central1-a/machineTypes/n1-standard-1
+      metadata:
+        items:
+        - key: startup-script
+          value: "apt-get update"
+      disks:
+      - deviceName: boot
+        type: PERSISTENT
+        boot: true
+        autoDelete: true
+        initializeParams:
+          sourceImage: https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180806
+      networkInterfaces:
+      - network: https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-dcdf854d278b50cd/global/networks/default
+        accessConfigs:
+        - name: External NAT
+          type: ONE_TO_ONE_NAT
+    -Build a deployment from the template:		  
+	   gcloud deployment-manager deployments create my-first-depl --config mydeploy.yaml
+	 -click Compute Engine > VM instances. You will see that a VM instance called my-vm has been created, as specified by the template. on Custom metadata section. Confirm that the startup script you specified in your Deployment Manager template has been installed.  
+Task4:Update a Deployment Manager deployment
+     Return to your Cloud Shell prompt
+	   nano mydeploy.yaml
+	         value: "apt-get update; apt-get install nginx-light -y"
+			 save (Ctrl+O ) and exit
+		Return to your Cloud Shell prompt. and 	  install startup script
+		   gcloud deployment-manager deployments update my-first-depl --config mydeploy.yaml
+		 -Click on the my-vm VM instance's name to open its VM instance details pane.
+Task5: View the Load on a VM using Cloud Monitoring		
+         -click Compute Engine > VM instances.
+
+          To open a command prompt on the my-vm instance, click SSH in its row in the VM instances list.
+		      dd if=/dev/urandom | gzip -9 >> /dev/null &
+		-Create a Monitoring workspace	
+                -click on Navigation menu > Monitoring.
+                - Settings - click Agent-click Metrics Explorer under the main Cloud Monitoring menu on the far left.-In the Metric pane of Metrics Explorer-select the resource type GCE VM instance and the metric CPU usage-Terminate your workload generator
+                -Return to your ssh session on my-vm and enter this command:
+                     kill %1
+END THE LAB					 
+ 
+ 
